@@ -21,27 +21,51 @@ class PrivateIssues::IssueTestPatch < ActiveSupport::TestCase
       assert !@issue.visible?
     end
 
-    should "be visible with permission" do
+    should "not be visible to user with permission but not author" do
       @role.add_permission! :view_private_issues
       User.current.reload
-
-      assert @issue.visible?
+      assert @issue.author != @user
+      assert !@issue.visible?
     end
 
-    #should "respect private pages in upper hierarchy" do
-    #  @child = Issue.generate_for_project!(@project) do |issue|
-    #    issue.parent_issue_id = @issue.id
-    #  end
-    #  assert !@child.visible?
-    #end
+    should "not be visible to user with permission but not assignee" do
+      @role.add_permission! :view_private_issues
+      User.current.reload
+      assert @issue.assigned_to != @user
+      assert !@issue.visible?
+    end
 
-    should "be visible for author" do
+
+    should "not be visible to user with permission but not watcher" do
+      @role.add_permission! :view_private_issues
+      User.current.reload
+      assert !@issue.watched_by?(@user)
+      assert !@issue.visible?
+    end
+
+
+    should "be visible to an author with permission" do
+      @role.add_permission! :view_private_issues
+      User.current.reload
       @issue.author = @user
       assert @issue.visible?
     end
 
-    should "be visible for assignee" do
+
+    should "be visible to an assignee with permission" do
+      @role.add_permission! :view_private_issues
+      User.current.reload
       @issue.assigned_to = @user
+      assert @issue.visible?
+    end
+
+
+    should "be visible to a watcher with permission" do
+      @role.add_permission! :view_private_issues
+      User.current.reload
+      Watcher.create!(:user => @user, :watchable => @issue)
+
+      assert @issue.watched_by? @user
       assert @issue.visible?
     end
 
