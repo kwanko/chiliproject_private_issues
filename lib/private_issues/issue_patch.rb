@@ -34,7 +34,7 @@ module PrivateIssues
     module InstanceMethods
       def private_issue_visible?(project, user)
         if self.private?
-          !user.nil? and (user.allowed_to?(:view_private_issues, project) or (self.author == user) or (self.assigned_to == user))
+          !user.nil? and (user.allowed_to?(:view_private_issues, project) and ((self.author == user) or (self.assigned_to == user) or (self.watched_by? user)))
         else
           true
         end
