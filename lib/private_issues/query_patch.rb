@@ -17,12 +17,14 @@ module PrivateIssues
         filters_clauses = statement_without_private_issues
 
         user = User.current
-        unless project && user.allowed_to?(:view_private_issues, project)
-          filters_clauses << " AND (issues.private = #{connection.quoted_false} OR issues.author_id = #{user.id} OR issues.assigned_to_id = #{user.id})"
+        if project && user.allowed_to?(:view_private_issues, project)
+          # Display privates issues for author and watchers
+          filters_clauses << " AND ((issues.private = #{connection.quoted_false} OR issues.author_id = #{user.id} OR issues.assigned_to_id = #{user.id}) OR (issues.private = #{connection.quoted_true} AND #{Issue.table_name}.id IN (SELECT #{Watcher.table_name}.watchable_id FROM #{Watcher.table_name} WHERE #{Watcher.table_name}.watchable_type='Issue' AND #{Watcher.table_name}.user_id = #{user.id})))"
+        else
+          # Hide private issues
+          filters_clauses << " AND (issues.private = #{connection.quoted_false} OR issues.author_id = #{user.id} OR issues.assigned_to_id = #{user.id}) "
         end
-        filters_clauses
       end
     end
-
   end
 end

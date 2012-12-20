@@ -17,6 +17,13 @@ Dispatcher.to_prepare :chiliproject_private_issues do
   unless IssuesController.included_modules.include? PrivateIssues::IssuesControllerPatch
     IssuesController.send(:include, PrivateIssues::IssuesControllerPatch)
   end
+
+   # ANY
+  # Put in evidence a private issue in the list of tickets
+  require_dependency "queries_helper"
+  unless QueriesHelper.included_modules.include? PrivateIssues::QueriesHelperPatch
+    QueriesHelper.send(:include, PrivateIssues::QueriesHelperPatch)
+  end
 end
 
 Redmine::Plugin.register :chiliproject_private_issues do

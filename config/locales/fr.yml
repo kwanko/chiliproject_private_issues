@@ -1,0 +1,9 @@
+# English strings go here for Rails i18n
+fr:
+  field_private: Privée
+  message_issues_below_will_change_to_private: "Toutes les demandes ci-dessous vont devenir privées:"
+  message_issues_below_will_change_to_public: "Toutes les demandes ci-dessous vont devenir publiques:"
+  text_dialog_question_message: "Voulez-vous vraiment continuer?"
+  text_bt_no: Non
+  text_bt_yes: Oui
+  text_dialog_title: "Tickets privés: Confirmation"

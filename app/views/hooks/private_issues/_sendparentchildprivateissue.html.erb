@@ -1,0 +1,8 @@
+<% if @issues and @issues.any? %>
+ <p class="required dialogtext"><%= @private == "1" ? l(:message_issues_below_will_change_to_private) : l(:message_issues_below_will_change_to_public)%></p>
+  <ul>
+    <% for issue in @issues %>
+    <li><%= "#{issue.tracker.name} ##{issue.id} : #{issue.subject[0,100]}" %></li>
+    <% end %>
+  </ul>
+<% end %>
